@@ -2,11 +2,13 @@ import Vapor
 
 extension Droplet {
     func setupRoutes() throws {
-        get("hello") { req in
-            var json = JSON()
-            try json.set("hello", "world")
-            return json
-        }
+        let cc = CardController()
+        let pc = PostController()
+        let csc = CardSetController()
+
+        resource("cards", cc)
+        resource("posts", pc)
+        resource("cardsets", csc)
 
         get("plaintext") { req in
             return "Hello, world!"
