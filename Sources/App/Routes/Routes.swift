@@ -14,10 +14,10 @@ extension Droplet {
     private func setupUnauthenticatedRoutes() throws {
         let cardController = CardController()
         let cardSetController = CardSetController()
-
+        let userController = UserController()
         resource("cards", cardController)
         resource("cardsets", cardSetController)
-
+        resource("users", userController)
         // response to requests to /info domain
         // with a description of the request
         get("info") { req in
