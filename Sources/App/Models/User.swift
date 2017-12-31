@@ -15,6 +15,10 @@ final class User: Model {
     /// The user's _hashed_ password
     var password: String?
 
+    var cardsets: Children<User, CardSet> {
+        return children()
+    }
+
     /// Creates a new User
     init(name: String, email: String, password: String? = nil) {
         self.name = name
@@ -82,6 +86,7 @@ extension User: JSONConvertible {
         try json.set("id", id)
         try json.set("name", name)
         try json.set("email", email)
+        try json.set("cardsets", cardsets.all())
         return json
     }
 }

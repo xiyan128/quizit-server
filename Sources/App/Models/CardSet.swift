@@ -9,8 +9,16 @@ final class CardSet: Model {
     /// The description of the card set
     var description: String
     /// The children of the card set
+
+    let user_id: Identifier
+
+
     var cards: Children<CardSet, Card> {
         return children()
+    }
+
+    var user: Parent<CardSet, User> {
+        return parent(id: user_id)
     }
     
     
@@ -18,11 +26,13 @@ final class CardSet: Model {
     struct Keys {
         static let id = "id"
         static let description = "description"
+        static let user_id = "user_id"
     }
     
     /// Creates a new CardSet
-    init(description: String) {
+    init(description: String, user_id: Identifier) throws {
         self.description = description
+        self.user_id = user_id
     }
     
     // MARK: Fluent Serialization
@@ -31,12 +41,14 @@ final class CardSet: Model {
     /// database row
     init(row: Row) throws {
         description = try row.get(CardSet.Keys.description)
+        user_id = try row.get(User.foreignIdKey)
     }
     
     // Serializes the CardSet to the database
     func makeRow() throws -> Row {
         var row = Row()
         try row.set(CardSet.Keys.description, description)
+        try row.set(User.foreignIdKey, user_id)
         return row
     }
 }
@@ -50,6 +62,7 @@ extension CardSet: Preparation {
     static func prepare(_ database: Database) throws {
         try database.create(self) { builder in
             builder.id()
+            builder.foreignId(for: User.self)
             builder.string(CardSet.Keys.description)
         }
     }
@@ -69,13 +82,15 @@ extension CardSet: Preparation {
 //
 extension CardSet: JSONConvertible {
     convenience init(json: JSON) throws {
-        self.init(
-            description: try json.get(CardSet.Keys.description)
+        try self.init(
+            description: try json.get(CardSet.Keys.description),
+            user_id: try json.get(CardSet.Keys.user_id)
         )
     }
     
     func makeJSON() throws -> JSON {
         var json = JSON()
+        try json.set(User.foreignIdKey, user_id)
         try json.set(CardSet.Keys.id, id)
         try json.set(CardSet.Keys.description, description)
         try json.set("cards", cards.all())
