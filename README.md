@@ -1,6 +1,6 @@
 # Quizit-Server
 Based on vapor.
-### userage
+### Useage
 ```
 $ vapor build
 $ vapor run
