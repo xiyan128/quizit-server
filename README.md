@@ -1,6 +1,6 @@
 # Quizit-Server
 Based on vapor.
-### Useage
+### Usage
 ```
 $ vapor build
 $ vapor run
